@@ -98,12 +98,46 @@ body::before {
 .heart::before,
 .heart::after { content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%; background: inherit; top: -50%; left: 0; }
 .heart::after { left: 50%; top: 0; }
-.glass-blob { position: absolute; border-radius: 42%; background: radial-gradient(circle at 32% 32%, rgba(255,255,255,.82), rgba(255,190,240,.28) 36%, rgba(248,210,255,.14) 72%, rgba(255,255,255,0) 100%); filter: blur(28px); opacity: 1; box-shadow: 0 48px 130px rgba(242,184,238,.32); backdrop-filter: blur(24px); }
+.glass-blob {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    rgba(255,255,255,0.92) 0%,
+    rgba(255,225,245,0.32) 25%,
+    rgba(220,190,255,0.12) 55%,
+    rgba(255,255,255,0) 100%
+  );
+  box-shadow: 0 54px 170px rgba(255,220,245,.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,.18);
+  opacity: 0.55;
+}
 .glass-object { position: absolute; pointer-events: none; opacity: 1; transform-style: preserve-3d; }
-.glass-heart { width: 180px; height: 178px; border-radius: 42% 42% 52% 52%; background: radial-gradient(circle at 42% 36%, rgba(255,255,255,.98), rgba(255,225,245,.68) 34%, rgba(255,195,230,.2) 74%, rgba(255,255,255,0) 96%); box-shadow: 0 50px 160px rgba(255,190,240,.30); border: 1px solid rgba(255,255,255,.22); filter: saturate(1.1); }
-.glass-orb { width: 235px; height: 235px; border-radius: 50%; background: radial-gradient(circle at 34% 33%, rgba(255,255,255,.97), rgba(255,215,245,.34) 38%, rgba(255,230,250,.14) 58%, rgba(255,255,255,0) 94%); box-shadow: 0 54px 170px rgba(255,220,245,.28); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.18); }
-.glass-polaroid { width: 96px; height: 118px; background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(248,225,245,.65)); border: 1px solid rgba(255,255,255,.22); border-radius: 22px; box-shadow: 0 18px 48px rgba(255,210,235,.18); }
-.glass-polaroid::before { content: ''; position: absolute; inset: 10px 10px 24px 10px; border-radius: 14px; background: rgba(255,255,255,.88); box-shadow: inset 0 0 0 1px rgba(255,255,255,.5); }
+.glass-heart { width: 180px; height: 180px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.92) 0%, rgba(255,225,245,0.32) 25%, rgba(220,190,255,0.12) 55%, rgba(255,255,255,0) 100%); box-shadow: 0 54px 170px rgba(255,220,245,.28); border: 1px solid rgba(255,255,255,.18); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0.55; }
+.glass-orb {
+width: 235px;
+height: 235px;
+border-radius: 50%;
+
+background: radial-gradient(
+circle at 35% 30%,
+rgba(255,255,255,0.92) 0%,
+rgba(255,225,245,0.32) 25%,
+rgba(220,190,255,0.12) 55%,
+rgba(255,255,255,0) 100%
+);
+
+box-shadow: 0 54px 170px rgba(255,220,245,.28);
+
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+
+border: 1px solid rgba(255,255,255,.18);
+}
+.glass-polaroid { width: 96px; height: 118px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); border-radius: 22px; box-shadow: 0 18px 48px rgba(255,210,235,.12); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); overflow: hidden; }
+.glass-polaroid::before { content: ''; position: absolute; inset: 10px 10px 24px 10px; border-radius: 14px; background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
 .glass-object, .glass-blob { transition: transform 220ms ease; }
 @keyframes driftFloat { 0% { transform: translate3d(0,0,0); } 50% { transform: translate3d(5px,6px,0); } 100% { transform: translate3d(0,0,0); }}
 .glass-blob { animation: driftFloat 14s ease-in-out infinite; }
@@ -573,12 +607,71 @@ body::after {
    RESPONSIVE
 ───────────────────────────────────────────── */
 @media (max-width: 600px) {
+  /* booth layout */
   .booth-layout { gap: 1.8rem; }
   .viewfinder { width: min(300px,86vw); height: min(300px,86vw); }
   .filter-row { flex-wrap: wrap; justify-content: center; }
   .welcome-highlights { grid-template-columns: 1fr; }
   .capture-panel { width: 100%; }
   .thumbs { justify-content: center; }
+
+  /* FIX 2 — hero title smaller, tighter spacing */
+  .w-title {
+    font-size: 2.8rem;
+    line-height: 1.08;
+    margin-bottom: .2rem;
+  }
+  .w-eyebrow { margin-bottom: .8rem; }
+  .w-sub { margin-bottom: 1.2rem; font-size: .92rem; }
+  .hearts-row { margin-bottom: 1.4rem; }
+  .preview-strip { margin-bottom: 1.2rem; }
+
+  /* FIX 6 — open booth button wider on mobile */
+  .open-btn {
+    width: 85%;
+    max-width: 320px;
+    text-align: center;
+    margin-bottom: 1.6rem;
+  }
+
+  /* FIX 7 — reduce top padding so title + CTA visible sooner */
+  #welcome { padding: 1.4rem 1.2rem 2rem; }
+
+  /* FIX 1 — glassmorphism cards dimmer, more luxury/dreamy */
+  .highlight {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .d-card, .kpi-tree-wrap, .segment-wrap,
+  .funnel-wrap, .cohort-wrap, .ab-wrap,
+  .pf-card, .arch-wrap {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* FIX 3 — critters smaller + dimmer on mobile, hide 2 extras */
+  .critter {
+    width: 2.4rem;
+    height: 2.4rem;
+    font-size: 1.3rem;
+    opacity: .45;
+  }
+  .critter:nth-child(3),
+  .critter:nth-child(4) { display: none; }
+
+  /* FIX 4 — orbs/blobs dimmer + smaller on mobile */
+  .glass-orb {
+    width: 140px;
+    height: 140px;
+    opacity: 1;
+  }
+  .glass-blob { opacity: .55; }
+  .glass-heart { width: 110px; height: 110px; opacity: .35; }
+  #ambientScene { opacity: .55; }
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -1398,11 +1491,30 @@ function shareStrip() {
   buildStripCanvas(1).then(async c => {
     const dataUrl = c.toDataURL('image/png');
 
+    // native share sheet on mobile (iOS/Android), clipboard fallback on desktop
+    if (navigator.share) {
+      try {
+        const blob = await (await fetch(dataUrl)).blob();
+        const file = new File([blob], 'sammy-booth-strip.png', { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: "sammy's little booth ♡" });
+        } else {
+          await navigator.share({ url: dataUrl, title: "sammy's little booth ♡" });
+        }
+        saveSession();
+        return;
+      } catch (err) {
+        if (err.name === 'AbortError') { saveSession(); return; }
+        console.warn('[SHARE] native share failed, trying clipboard:', err.message);
+      }
+    }
+
+    // desktop clipboard fallback
     if (navigator.clipboard && navigator.clipboard.write) {
       try {
         const blob = await (await fetch(dataUrl)).blob();
         await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-        showToast('♡ strip copied to clipboard ♡');   // non-blocking: was alert()
+        showToast('♡ strip copied to clipboard ♡');
         saveSession();
         return;
       } catch (err) {
@@ -1508,10 +1620,8 @@ function buildAmbientParticles(layer) {
 function buildGlassBlobs(layer) {
   if (!layer) return;
   const blobSettings = [
-    { left: '6%', top: '12%', width: '360px', height: '260px', delay: '0s' },
-    { left: '68%', top: '12%', width: '280px', height: '220px', delay: '2s' },
-    { left: '12%', top: '62%', width: '260px', height: '190px', delay: '4s' },
-    { left: '63%', top: '66%', width: '260px', height: '220px', delay: '1s' }
+    { left: '-4%', top: '-6%', width: '180px', height: '180px', delay: '0s' },
+    { left: '68%', top: '62%', width: '160px', height: '160px', delay: '3s' }
   ];
   blobSettings.forEach(cfg => {
     const el = document.createElement('div');
