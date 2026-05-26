@@ -1,0 +1,5 @@
+User-agent: *
+
+Allow: /
+
+Sitemap: https://photobooth-analytics-five.vercel.app/sitemap.xml
