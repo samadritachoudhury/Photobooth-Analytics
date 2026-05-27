@@ -1623,22 +1623,48 @@ async function updateDashboard(){
   } catch(e) { console.warn('[DASHBOARD]', e); }
 }
 
-function showPortfolio(){ const m=document.getElementById('portfolioModal'); if(!m) return; const t=document.getElementById('portfolioText'); if(!t) return; const users = analytics.impressions || 0; const top = Object.entries(analytics.filterUsage||{}).sort((a,b)=>b[1]-a[1])[0]; const topFilter = top? top[0] : '—'; const text=`━━━━━━━━━━━━
+async function showPortfolio(){
+  const m = document.getElementById('portfolioModal');
+  if (!m) return;
+  const t = document.getElementById('portfolioText');
+  if (!t) return;
+
+  t.value = 'loading...';
+  showModal('portfolioModal');
+
+  const { data, error } = await _supabase
+    .from('user_sessions')
+    .select('shares, downloads, completed, filter_selected, device_type');
+
+  if (error || !data) { t.value = 'could not load data ♡'; return; }
+
+  const totalVisits    = data.length;
+  const totalShares    = data.reduce((sum, r) => sum + (r.shares    || 0), 0);
+  const totalDownloads = data.reduce((sum, r) => sum + (r.downloads || 0), 0);
+  const totalCompleted = data.filter(r => r.completed).length;
+  const completionRate = totalVisits > 0 ? Math.round((totalCompleted / totalVisits) * 100) : 0;
+  const filterCounts   = {};
+  data.forEach(r => {
+    if (r.filter_selected) filterCounts[r.filter_selected] = (filterCounts[r.filter_selected] || 0) + 1;
+  });
+  const topFilter = Object.entries(filterCounts).sort((a,b)=>b[1]-a[1])[0];
+
+  t.value = `━━━━━━━━━━━━
 sammy's booth summary ♡
 ━━━━━━━━━━━━
 Date: ${new Date().toLocaleDateString()}
-This Browser Visits: ${users}
-Photos Taken: ${analytics.photosTaken||0}
-Avg Time Per Photo: ${analytics.avgTimePerPhoto||'—'}s
-Top Filter: ${topFilter}
-Downloads: ${analytics.downloads||0}
-Shares: ${analytics.shares||0}
-AI Preference: ${analytics.aiPreference||'—'}
-Completion: ${analytics.completed? 'Yes' : 'No'}
-Device: ${analytics.deviceType || 'Unknown'}
+Total Visits (all devices): ${totalVisits}
+Sessions Completed: ${totalCompleted}
+Completion Rate: ${completionRate}%
+Total Downloads: ${totalDownloads}
+Total Shares: ${totalShares}
+Top Filter: ${topFilter ? topFilter[0] : '—'}
+Current Session Completed: ${sessionCompleted ? 'Yes' : 'No'}
+Device: ${/Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop'}
 
-note: stats are stored locally on this browser ♡
-`; t.value = text; showModal('portfolioModal'); }
+note: stats are live from supabase · same on every device ♡
+`;
+}
 function copyPortfolio(){ const t=document.getElementById('portfolioText'); if(!t) return; t.select(); document.execCommand('copy'); showToast('♡ copied to clipboard ♡'); }
 
 const ambientState = { tx: 0, ty: 0, targetX: 0, targetY: 0, width: window.innerWidth, height: window.innerHeight };
