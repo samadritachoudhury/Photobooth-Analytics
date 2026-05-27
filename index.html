@@ -968,7 +968,6 @@ function initAnalytics() {
   analytics.filterUsage = analytics.filterUsage || {};
   analytics.completed = false; // reset current session completion state on each visit
   analytics.funnelStages.stage1 = analytics.funnelStages.stage1 || { seen: true, ts: Date.now() };
-  analytics.impressions = (analytics.impressions || 0) + 1;
   saveAnalytics();
   function _initDomTasks(){
     updateDashboard && updateDashboard();
@@ -1593,17 +1592,35 @@ function handleAIPreference(value) {
     hideAIPrompt();
   }
 }
-function updateDashboard(){ try{
-  // cumulative visitor metrics
-  const users = analytics.impressions || 0;
-  $('adUsers') && ( $('adUsers').textContent = users );
-  $('adCompleted') && ( $('adCompleted').textContent = analytics.completed? 'yes' : 'no' );
-  $('adDownloads') && ( $('adDownloads').textContent = analytics.downloads || 0 );
-  $('adShares') && ( $('adShares').textContent = analytics.shares || 0 );
-  const top = Object.entries(analytics.filterUsage||{}).sort((a,b)=>b[1]-a[1])[0];
-  $('adTopFilter') && ( $('adTopFilter').textContent = top? top[0] : '—' );
-  $('adAvgTime') && ( $('adAvgTime').textContent = (analytics.avgTimePerPhoto||'—') + 's' );
-}catch(e){}
+async function updateDashboard(){
+  try {
+    const { data, error } = await _supabase
+      .from('user_sessions')
+      .select('session_id, shares, downloads, completed, filter_selected');
+
+    if (error || !data) return;
+
+    const totalVisits    = data.length;
+    const totalShares    = data.reduce((sum, r) => sum + (r.shares    || 0), 0);
+    const totalDownloads = data.reduce((sum, r) => sum + (r.downloads || 0), 0);
+    const totalCompleted = data.filter(r => r.completed).length;
+    const completionRate = totalVisits > 0 ? Math.round((totalCompleted / totalVisits) * 100) : 0;
+
+    // top filter across all sessions
+    const filterCounts = {};
+    data.forEach(r => {
+      if (r.filter_selected) filterCounts[r.filter_selected] = (filterCounts[r.filter_selected] || 0) + 1;
+    });
+    const topFilter = Object.entries(filterCounts).sort((a,b)=>b[1]-a[1])[0];
+
+    $('adUsers')     && ( $('adUsers').textContent     = totalVisits );
+    $('adShares')    && ( $('adShares').textContent    = totalShares );
+    $('adDownloads') && ( $('adDownloads').textContent = totalDownloads );
+    $('adCompleted') && ( $('adCompleted').textContent = completionRate + '%' );
+    $('adTopFilter') && ( $('adTopFilter').textContent = topFilter ? topFilter[0] : '—' );
+    $('adAvgTime')   && ( $('adAvgTime').textContent   = (analytics.avgTimePerPhoto||'—') + 's' );
+
+  } catch(e) { console.warn('[DASHBOARD]', e); }
 }
 
 function showPortfolio(){ const m=document.getElementById('portfolioModal'); if(!m) return; const t=document.getElementById('portfolioText'); if(!t) return; const users = analytics.impressions || 0; const top = Object.entries(analytics.filterUsage||{}).sort((a,b)=>b[1]-a[1])[0]; const topFilter = top? top[0] : '—'; const text=`━━━━━━━━━━━━
