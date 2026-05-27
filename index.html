@@ -1616,7 +1616,7 @@ async function updateDashboard(){
     $('adUsers')     && ( $('adUsers').textContent     = totalVisits );
     $('adShares')    && ( $('adShares').textContent    = totalShares );
     $('adDownloads') && ( $('adDownloads').textContent = totalDownloads );
-    $('adCompleted') && ( $('adCompleted').textContent = completionRate + '%' );
+    $('adCompleted') && ( $('adCompleted').textContent = sessionCompleted ? 'yes' : 'no' );
     $('adTopFilter') && ( $('adTopFilter').textContent = topFilter ? topFilter[0] : '—' );
     $('adAvgTime')   && ( $('adAvgTime').textContent   = (analytics.avgTimePerPhoto||'—') + 's' );
 
